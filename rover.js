@@ -1,7 +1,23 @@
-var myRover = {
-  position: [0,0],
-  direction: 'N'
-};
+var myRovers = [];
+
+function Rover(position, name, direction){
+  this.position = position;
+  this.name = name;
+  this.direction = direction;
+  this.landAnywhere = function(){
+    var landingPos;
+    var occupied;
+
+    //Assign random position till the the position is not occupied
+    do{
+      landingPos = randomPosition();
+      occupied = (obstacleInTheWay(landingPos) || roverInTheWay(landingPos));
+    }while(occupied);
+
+    this.position = landingPos;
+    console.log(this.name, "landed at", landingPos);
+  }
+}
 
 var directions = ['N', 'E', 'S', 'W'];
 
@@ -18,14 +34,16 @@ function fillWithObstacles(totalObstacles){
   var i = 0;
 
   while(i < totalObstacles){
-    var x, y;
-    x = Math.floor(Math.random() * 10);
-    y = Math.floor(Math.random() * 10);
+    // Random position
+    rndPos = randomPosition();
+    var y = rndPos[0];
+    var x = rndPos[1];
 
     //The grid position can't be already occupied by an obstacle
     //The grid position can't be the starting position of the rover (0,0)
-    if(grid[y][x] !== 'O' || !(y == 0 && x == 0)){
+    if(!obstacleInTheWay(rndPos) || !roverInTheWay(rndPos)){
       grid[y][x] = 'O';
+      console.log("New obstacle at", rndPos);
       i++;
     }
   }
@@ -73,23 +91,25 @@ function move(rover, direction) {
   if(potentialPos[1]>9) potentialPos[1] = 0;
 
   // Check if potential position is blocked by an obstacle
-  if(grid[potentialPos[0]][potentialPos[1]] == 'O'){
+  if(obstacleInTheWay(potentialPos)){
     console.log("Cant't reach position: There is an obstacle in the way");
+
+  }else if(roverInTheWay(potentialPos)){
+    console.log("Cant't reach position: There is another rover in the way");
 
   }else{
     rover.position = potentialPos;
     console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]")
   }
-
 }
 
 function moveForward(rover){
-  console.log("> Move forward Rover");
+  console.log("> Move forward", rover.name);
   move(rover, 'front');
 }
 
 function moveBackward(rover){
-  console.log("> Move backwards Rover");
+  console.log("> Move backwards", rover.name);
   move (rover, 'back');
 }
 
@@ -127,13 +147,37 @@ function turn(rover, direction){
 }
 
 function turnRight(rover){
-  console.log("> Turn right Rover");
+  console.log("> Turn right", rover.name);
   turn(rover, 'right');
 }
 
 function turnLeft(rover){
-  console.log("> Turn left Rover");
+  console.log("> Turn left", rover.name);
   turn(rover, 'left');
+}
+
+// Check wether there is a rover in a position
+function roverInTheWay(position){
+  myRovers.forEach(function(rover){
+    if(rover.position[0] == position[0] && rover.position[1] == position[1]){
+      //There is a rover in the way
+      return true;
+    }
+  });
+
+  //No rover in the way
+  return false;
+}
+
+// Check wether there is an obstacle in a position
+function obstacleInTheWay(position){
+  if(grid[position[0]][position[1]] == 'O'){
+    // There is an obstacle in the way
+    return true;
+  }else{
+    // No obstacles in the way
+    return false;
+  }
 }
 
 // Programming orders
@@ -144,16 +188,16 @@ function followOrders(rover, orders){
 
     switch(currentOrderCode){
       case 'f':
-        moveForward(myRover);
+        moveForward(rover);
       break;
       case 'b':
-        moveBackward(myRover);
+        moveBackward(rover);
       break;
       case 'r':
-        turnRight(myRover);
+        turnRight(rover);
       break;
       case 'l':
-        turnLeft(myRover);
+        turnLeft(rover);
       break;
       default:
         console.log('Provide a valid order to follow');
@@ -162,7 +206,23 @@ function followOrders(rover, orders){
   }
 }
 
+//Returns a random position in the grid
+function randomPosition(){
+  var x, y;
+  x = Math.floor(Math.random() * 10);
+  y = Math.floor(Math.random() * 10);
+
+  return [y,x];
+}
+
 //Setup grid with 15 obstacles
 fillWithObstacles(15);
-//Give orders to the rover
-followOrders(myRover, 'fffrfflfffbb');
+//Create two rovers
+myRovers.push(new Rover([0,0], "First rover in mars", 'N'));
+myRovers.push(new Rover([0,0], "Second rover in mars", 'N'));
+//Land the rovers in the planet
+myRovers[0].landAnywhere();
+myRovers[1].landAnywhere();
+//Give orders to the rovers;
+followOrders(myRovers[0], 'fffrfflfffbb');
+followOrders(myRovers[1], 'fffrfflfffbb');
