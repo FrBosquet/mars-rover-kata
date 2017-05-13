@@ -61,7 +61,7 @@ function move(rover, direction) {
       modifier = -1;
     break;
     default:
-      console.log('Enter "front" or "back" to specify movement direction');
+      console.error('Enter "front" or "back" to specify movement direction');
       return;
     break;
   }
@@ -92,14 +92,14 @@ function move(rover, direction) {
 
   // Check if potential position is blocked by an obstacle
   if(obstacleInTheWay(potentialPos)){
-    console.log("Cant't reach position: There is an obstacle in the way");
+    console.warn("Can't reach position: There is an obstacle in the way");
 
   }else if(roverInTheWay(potentialPos)){
-    console.log("Cant't reach position: There is another rover in the way");
+    console.warn("Can't reach position: There is another rover in the way");
 
   }else{
     rover.position = potentialPos;
-    console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]")
+    console.log("New " + rover.name + " Position: [" + rover.position[0] + ", " + rover.position[1] + "]")
   }
 }
 
@@ -125,7 +125,7 @@ function turn(rover, direction){
       indexModifier = -1;
     break;
     default:
-      console.log('Enter "right" or "left" to specify turn direction');
+      console.error;('Enter "right" or "left" to specify turn direction');
       return;
     break;
   }
@@ -143,7 +143,7 @@ function turn(rover, direction){
 
   // Assign new direction
   rover.direction = directions[newIndex];
-  console.log('New Rover Direction: ' + rover.direction);
+  console.log('New ' + rover.name + ' Direction: ' + rover.direction);
 }
 
 function turnRight(rover){
@@ -225,4 +225,4 @@ myRovers[0].landAnywhere();
 myRovers[1].landAnywhere();
 //Give orders to the rovers;
 followOrders(myRovers[0], 'fffrfflfffbb');
-followOrders(myRovers[1], 'fffrfflfffbb');
+followOrders(myRovers[1], 'rfflffrblrff');
