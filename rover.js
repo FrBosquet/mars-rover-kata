@@ -1,5 +1,7 @@
+// Array of rovers in the planet
 var myRovers = [];
 
+// Rover constructor
 function Rover(position, name, direction){
   this.position = position;
   this.name = name;
@@ -19,6 +21,7 @@ function Rover(position, name, direction){
   }
 }
 
+// Directions array
 var directions = ['N', 'E', 'S', 'W'];
 
 // Grid array
@@ -94,6 +97,7 @@ function move(rover, direction) {
   if(obstacleInTheWay(potentialPos)){
     console.warn("Can't reach position: There is an obstacle in the way");
 
+  // Check if potential position is blocked by another rover
   }else if(roverInTheWay(potentialPos)){
     console.warn("Can't reach position: There is another rover in the way");
 
@@ -130,7 +134,8 @@ function turn(rover, direction){
     break;
   }
 
-  //Look in the directions array for the current index
+  // Look in the directions array for the current index
+  // Use indexModifier to get the new index
   var currentIndex = directions.indexOf(rover.direction);
   var newIndex = currentIndex + indexModifier;
 
@@ -175,13 +180,13 @@ function obstacleInTheWay(position){
     // There is an obstacle in the way
     return true;
   }else{
+
     // No obstacles in the way
     return false;
   }
 }
 
 // Programming orders
-
 function followOrders(rover, orders){
   for(var i = 0; i < orders.length; i++){
     var currentOrderCode = orders[i];
